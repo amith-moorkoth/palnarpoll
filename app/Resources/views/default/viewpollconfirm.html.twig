@@ -1,0 +1,18 @@
+<div class="col-sm-6 previewer img-thumbnail well">
+    <form action="/voteepoll" onsubmit="return submitmyforms(this)" method="post" class="img-thumbnail well-sm p_form">
+        <h2>{{ ques }}</h2>
+        <br/>
+        <table width="100%">
+                {% for opts in opt %}
+                    <tr>
+                        <td><input type='radio' readonly class='bigradio' value="{{ opts }}"  {% if opts==me %}checked="checked"{% endif %} name='me'></td>
+                        <td><input type='text' value="{{ opts }}" class='form-control' placeholder='Please provide option' readonly></td>
+                    </tr>
+                {% endfor %}
+        </table>
+        <br/>
+        <input type="hidden" value="{{ id }}" name="sme">
+        <input type="hidden" name="sme1">
+    </form>
+</div>
+

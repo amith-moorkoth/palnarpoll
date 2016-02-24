@@ -1,0 +1,14 @@
+<div class="col-sm-12 previewer img-thumbnail well">
+        <table width="100%"  class="table table-striped">
+                {% for opts in arr %}
+                    <tr>
+                        <td>{{ opts.ques }}</td>
+                        <td>{{ opts.opt }}</td>
+                        <td>{{ opts.dates }}</td>
+                        <td>{{ opts.datess|date("m/d/Y") }}</td>
+                        <td><a href="#" onclick="clickeditpoll('{{ opts.id }}')" class="btn btn-success btn-lg"><span class="glyphicon glyphicon-pencil"></span> Edit</a></td>
+                    </tr>
+                {% endfor %}
+        </table>
+</div>
+

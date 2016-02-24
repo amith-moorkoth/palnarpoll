@@ -1,0 +1,119 @@
+<div class="col-sm-6 pollmaker img-thumbnail well">
+    <input type="text" value="{{ ques }}" class="form-control poll_ques" placeholder="Provide Your Question" id="eusr">
+    <table id="emake_poll_optionss" width="100%">
+        {%set  oop=0 %}
+        {% for opts in opt %}
+            <tr id='option_in_poll1{{ oop }}'>
+                <td>
+                    <input type='text' value="{{ opts }}" class='form-control' onkeyup="make_myoption(this,'p_optionss')" onmousedown='make_mouse_down(this)'
+                           onmouseup="make_mouse_up(this,'p_optionss')" placeholder='Please provide option' id='{{ oop }}'>
+                </td>
+                <td>
+                    <span class='glyphicon glyphicon-remove' onclick='remove_polls1({{ oop }})'></span>
+                </td>
+            </tr>
+            {%set  oop = oop+1 %}
+        {% endfor %}
+    </table>
+    {%set  oop1=oop %}
+    <button type="button" id="emake_poll_option_bt" onclick="createoptions_edit()" class="btn btn-default form-control">Add Answer</button>
+    <input type="text" name="daterange" id='daterange' class="form-control" value="{{ dur }}" />
+    <br/><br/>
+
+    <div id="make_google_cred">
+        <!--<div class='g-signin2' data-onsuccess='onSignInc' data-onfailure='onSignInFailurec' data-theme='dark'>
+            <button type="button" class="btn btn-primary form-control" onclick="make_submit()">CreatePoll</button>
+        </div>-->
+        <div id="customBtnUpdate" onclick="attachSignin2(this)" class="customGPlusSignIn btn btn-primary form-control">
+            <span class="icon"></span>
+            <span class="buttonText">Update</span>
+        </div>
+    </div>
+</div>
+<div class="col-sm-6 previewer img-thumbnail well">
+    <h3>Preview</h3>
+    <form action="/updatepoll" onsubmit="return submitmyform()" method="post" id="qemypolls" class="img-thumbnail well-sm p_form">
+        <input type="text" value="{{ ques }}" class="form-control" readonly placeholder="Provide Your Question" id="e_usr" name="poll_ques"/>
+        <br/>
+        <table id="p_make_poll_optionss" width="100%">
+            {%set  oop=0 %}
+            {% for opts in opt %}
+                <tr id='p_option_in_poll1{{ oop }}'><td><input type='radio' name='me' readonly></td>
+                    <td><input type='text' class='form-control' value="{{ opts }}" placeholder='Please provide option' readonly id='p_optionss{{ oop }}' name='p_option{{ opts }}'></td></tr>
+                {%set  oop = oop+1 %}
+            {% endfor %}
+        </table>
+        <br/>
+        <input type="hidden" name="sme" id="smes">
+        <input type="hidden" name="sme1" id="smes1">
+        <input type="hidden" name="ids" value="{{ id }}">
+        <input type="submit" value="VOTE" class="btn btn-danger form-control">
+    </form>
+</div>
+
+<script>
+    var edit_poll={{ oop }};
+    $("#eusr").keyup(function() {
+        document.getElementById("e_usr").value=document.getElementById("eusr").value;
+    });
+    function remove_polls1(opt){
+        document.getElementById("option_in_poll1"+opt).remove();
+        document.getElementById("p_option_in_poll1"+opt).remove();
+    }
+    function createoptions_edit(){
+        edit_poll+=1;
+            $("#emake_poll_optionss").append("<tr id='option_in_poll1"+edit_poll+"'><td>" +
+                    "<input type='text' class='form-control' onkeyup=make_myoption(this,'p_optionss') onmousedown='make_mouse_down(this)' onmouseup=make_mouse_up(this,'p_optionss') placeholder='Please provide option' id='"+edit_poll+"'>" +
+                    "</td><td><span class='glyphicon glyphicon-remove' onclick='remove_polls1("+edit_poll+")'></span></td></tr>");
+            $("#p_make_poll_optionss").append("<tr id='p_option_in_poll1"+edit_poll+"'><td><input type='radio' name='me' readonly></td><td>" +
+                    "<input type='text' class='form-control' placeholder='Please provide option' readonly id='p_optionss"+edit_poll+"' name='p_option"+edit_poll+"'>" +
+                    "</td></tr>");
+    }
+
+
+    $('input[name="daterange"]').daterangepicker({
+        timePicker: true,
+        timePickerIncrement: 30,
+        locale: {
+            format: 'YYYY/MM/DD hh:mm:ss:A'
+        }
+    });
+    function attachSignin2(element) {
+        console.log(element.id);
+        auth2.attachClickHandler(element, {},
+                function(googleUser) {
+                    //googleUser.getBasicProfile().getName();
+                    //alert(googleUser.getBasicProfile().getEmail());
+                    var sucess=1;
+                    var val=$("#e_usr").val();
+                    if(val==""){sucess=0;
+                        alert('Please provide a question');
+                    }else{
+                        for(i=0;i<=edit_poll;i++){
+                            if ($('#p_option'+i).length) {
+                                val=$("#p_optionss"+i).val();
+                                if(val==""){sucess=0;alert('Please Provide the Option or Delete It');}
+                            }
+                        }
+                        if(edit_poll<1){sucess=0;alert('Please Provide Minimum one input');}
+                    }
+                    if(sucess==1) {
+                        $('#smes').val(googleUser.getBasicProfile().getEmail());
+                        $('#smes1').val($('#daterange').val());
+                        var $form = $('#qemypolls');
+                        $.ajax({
+                            url: $form.attr('action'),
+                            type: 'POST',
+                            data: $form.serialize(),
+                            success: function(result) {
+                                //alert(result);
+                                window.location.assign("/pollings");
+                            }
+                        });
+                    }
+                }, function(error) {
+                    alert(JSON.stringify(error, undefined, 2));
+                });
+    }attachSignin2(document.getElementById('customBtnUpdate'));
+
+</script>

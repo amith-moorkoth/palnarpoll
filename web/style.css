@@ -1,0 +1,12 @@
+.palnar{
+    background: url("img/palnar.png");
+    background-repeat: no-repeat;
+    background-size:100% 100%;
+    width:300px;
+    height:40px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.logout{
+    display: none;
+}
